@@ -183,7 +183,8 @@ StatusType OctopusGame::ChangePlayerIDScore(int PlayerID, int NewScore){
             // change the zero counter in the system score array
             int old_all_ss_zero_counter = all_groups_ss[currentPlayerScore].get_ZeroCounter();
             all_groups_ss[currentPlayerScore].set_ZeroCounter(old_all_ss_zero_counter-1);
-            all_groups_ss[NewScore].set_ZeroCounter(zero_counter-1);
+            int new_all_ss_zero_counter = all_groups_ss[NewScore].get_ZeroCounter();
+            all_groups_ss[NewScore].set_ZeroCounter(new_all_ss_zero_counter+1);
         }
 
         else{
