@@ -1,6 +1,7 @@
 #include "Scores_structure.h"
 #include "AVL_extra_functions.h"
 
+//
 void Score_structure::removePlayer_from_ss(PlayerSeat player_to_remove){
     Player* player_pointer= player_to_remove.getPlayerOnSeat();
     int player_score = player_pointer->getScore();
