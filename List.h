@@ -209,8 +209,6 @@ class List{
             }
            i=i->getNext();
        }
-
-
     }
 
     ~List(){

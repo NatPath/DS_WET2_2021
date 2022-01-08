@@ -1,7 +1,22 @@
-#ifndef _UnionFind_H_
-#define _UnionFind_H_
 
+
+#ifndef UNIONFIND_H
+#define UNIONFIND_H
+#include "Group.h"
+
+#define NO_PARENT -1
 class UnionFind{
+    int* size;
+    int* parent;
+    Group* groups;
+    int k;
 
+    public:
+    UnionFind(int numOfEle);
+    Group& find(const Group& group);
+    Group& findByID(int groupID);
+    void unionGroups(const Group& group1, const Group& group2);
+    void unionGroupsByID(int group1, int group2);
 };
-#endif
+
+#endif //UNTITLED5_UNIONFIND_H

@@ -3,48 +3,54 @@
 #include <memory>
 #include <exception>
 #include "Auxiliaries.h"
-#include "library1.h"
+#include "library2.h"
 #include "Avl.h"
 #include "Player.h"
+#include "Scores_structure.h"
+#include "OctopusGame.h"
 
 class Group
 {
     int group_id;
     int size;
-    Scores_Structure group_ss;
-    AVL_TREE<Player,Player> playersByLevelTree;
-
-
-    AVL_Tree<PlayerSeat, PlayerSeat> groupPlayersTree;
-    Node_ptr<PlayerSeat,PlayerSeat> highest_level_player;
+    Score_structure* groupSS;
+    AVL_Tree<PlayerSeat,PlayerSeat> groupPlayersByLevelTree;
+    int group_players_zero_level_counter;
 
 public:
-    Group(int groupID) : group_id(groupID),size(0),highest_level_player(nullptr){};
+    Group(int groupID) : group_id(groupID),size(0){
+        groupSS=new Score_structure[global_scale+1];
+        for (int i=0;i<=global_scale;i++){
+            groupSS[i].set_score(i);
+        }
+    };
+    Group(): group_id(-1),size(0){}
     ~Group()=default;
 
-    int getID() const
-    {
-        return group_id;
-    }
-    AVL_Tree<PlayerSeat, PlayerSeat>& getPlayerTree() {
-        return groupPlayersTree; // !!!!!!! Check if returning only the root is required !!!!!!!
-    }
-    void setGroupsPlayerTree(AVL_Tree<PlayerSeat,PlayerSeat>& new_tree){
-        groupPlayersTree = new_tree;
-    }
+    int setID(int new_id);
+    int getID() const;
+
+    Score_structure* get_groupSS();
+    void set_groupSS(Score_structure* new_groupSS);
+
+    AVL_Tree<PlayerSeat, PlayerSeat>& getPlayersTree();
+    void setGroupsPlayerTree(AVL_Tree<PlayerSeat,PlayerSeat>& new_tree);
+
     //gets the size of the group
     int getSize() const;
     void setSize(int new_size);
 
-    Node_ptr<PlayerSeat,PlayerSeat> getHighestLevelPlayer();
-    void updateHighestLevelPlayer();
-
+    int getGroupZeroCounter();
+    void setGroupZeroCounter(int new_zero_counter);
     /**
      * insert player into group
      * */
     void insertPlayer(Player* player_p);
-    void updateGroupPlayersAboutGroup();
 
+    void removePlayer(Player* player_p);
+    
+    
 };
+void unite_groups(Group& group_root,Group& group_to_add);
 
 #endif

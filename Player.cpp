@@ -1,13 +1,10 @@
 #include "Player.h"
 
+Player::Player(int playerID, int groupID, int score) : playerID(playerID), groupID(groupID), level(0),score(score){}
+
 int Player::getPlayerID() const
 {
     return playerID;
-}
-
-Group *Player::getGroupPointer() const
-{
-    return group;
 }
 
 int Player::getLevel()
@@ -15,15 +12,17 @@ int Player::getLevel()
     return level;
 }
 
-void Player::setGroup(Group *new_group_p)
-{
-    group = new_group_p;
-    groupID = new_group_p->getID();
-}
 
 void Player::setLevel(int new_level)
 {
     level = new_level;
+}
+
+int Player::getScore(){
+    return score;
+}
+void Player::setScore(int new_score){
+    score= new_score;
 }
 
 bool operator<(Player const &player_1, Player const &player_2)
@@ -73,50 +72,3 @@ bool operator!=(Player const &player_1, Player const &player_2)
 {
     return !(player_1 == player_2);
 }
-
-/*
-bool operator<(const Player &player_1, const Player &player_2)
-{
-    if (player_1.level < player_2.level)
-    {
-        return true;
-    }
-    else if ((player_1.level == player_2.level) && (player_2.playerID < player_1.playerID))
-    {
-        return true;
-    }
-
-    return false;
-}
-bool operator<=(const Player &player_1, const Player &player_2){
-    return !(player_1>player_2);
-}
-bool operator>(const Player &player_1, const Player &player_2)
-{
-    if (player_1.level > player_2.level)
-    {
-        return true;
-    }
-    else if ((player_1.level == player_2.level) && (player_2.playerID > player_1.playerID))
-    {
-        return true;
-    }
-
-    return false;
-}
-bool operator>=(const Player &player_1, const Player &player_2){
-    return !(player_1<player_2);
-}
-
-bool operator==(const Player &player_1, const Player &player_2)
-{
-    if ((player_1.level == player_2.level) && (player_2.playerID == player_1.playerID))
-    {
-        return true;
-    }
-    return false;
-}
-bool operator!=(const Player &player_1, const Player &player_2){
-    return !(player_1==player_2);
-}
-*/
