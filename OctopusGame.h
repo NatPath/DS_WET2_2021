@@ -24,6 +24,7 @@ class OctopusGame
     int scale;
 
     // help functions
+    Player* OctopusGame::findPlayerInTable(int PlayerID);
 public:
     int getK(){
         return k;

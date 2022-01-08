@@ -2,6 +2,9 @@
 
 Player::Player(int playerID, int groupID, int score) : playerID(playerID), groupID(groupID), level(0),score(score){}
 
+int Player::getGroupID() const{
+    return groupID;
+}
 int Player::getPlayerID() const
 {
     return playerID;
@@ -62,7 +65,9 @@ bool operator>=(Player const &player_1, Player const &player_2)
 
 bool operator==(Player const &player_1, Player const &player_2)
 {
-    if ((player_1.level == player_2.level) && (player_2.playerID == player_1.playerID))
+
+    //if ((player_1.level == player_2.level) && (player_2.playerID == player_1.playerID))
+    if (player_2.playerID == player_1.playerID)
     {
         return true;
     }

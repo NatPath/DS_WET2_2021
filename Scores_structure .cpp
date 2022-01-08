@@ -26,7 +26,7 @@ void Score_structure::addPlayer_to_ss(PlayerSeat player_to_add){
 int Score_structure::get_ZeroCounter(){
     return zero_counter;
 }
-AVL_Tree<PlayerSeat,PlayerSeat> Score_structure::get_ScoreTree(){
+AVL_Tree<PlayerSeat,PlayerSeat>& Score_structure::get_ScoreTree(){
     return score_tree;
 }
 void Score_structure::set_ScoreTree(AVL_Tree<PlayerSeat,PlayerSeat>& new_score_tree ){

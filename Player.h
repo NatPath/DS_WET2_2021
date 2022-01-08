@@ -29,7 +29,7 @@ public:
 
 
     int getPlayerID() const;
-
+    int getGroupID() const;
     int getLevel();
     void setLevel(int new_level);
     void increaseLevel(int increase_by);

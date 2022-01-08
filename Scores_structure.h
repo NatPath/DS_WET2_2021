@@ -23,7 +23,7 @@ class Score_structure{
     int get_ZeroCounter();
     void set_ZeroCounter(int new_zero_counter);
 
-    AVL_Tree<PlayerSeat,PlayerSeat> get_ScoreTree();
+    AVL_Tree<PlayerSeat,PlayerSeat>& get_ScoreTree();
     void set_ScoreTree(AVL_Tree<PlayerSeat,PlayerSeat>& new_score_tree );
 
 
