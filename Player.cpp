@@ -20,6 +20,9 @@ void Player::setLevel(int new_level)
 {
     level = new_level;
 }
+void Player::increaseLevel(int increase_by){
+    level=level+increase_by;
+}
 
 int Player::getScore(){
     return score;
@@ -27,6 +30,7 @@ int Player::getScore(){
 void Player::setScore(int new_score){
     score= new_score;
 }
+
 
 bool operator<(Player const &player_1, Player const &player_2)
 {

@@ -14,8 +14,11 @@ class Group
     int group_id;
     int size;
     Score_structure* groupSS;
+    //This part was moved to groupSS[0]
+    /* 
     AVL_Tree<PlayerSeat,PlayerSeat> groupPlayersByLevelTree;
     int group_players_zero_level_counter;
+    */
 
 public:
     Group(int groupID) : group_id(groupID),size(0){
@@ -33,22 +36,29 @@ public:
     Score_structure* get_groupSS();
     void set_groupSS(Score_structure* new_groupSS);
 
-    AVL_Tree<PlayerSeat, PlayerSeat>& getPlayersTree();
-    void setGroupsPlayerTree(AVL_Tree<PlayerSeat,PlayerSeat>& new_tree);
 
     //gets the size of the group
     int getSize() const;
     void setSize(int new_size);
 
-    int getGroupZeroCounter();
-    void setGroupZeroCounter(int new_zero_counter);
+
     /**
      * insert player into group
      * */
     void insertPlayer(Player* player_p);
 
+    /**
+     * remove player from group
+     * */
     void removePlayer(Player* player_p);
     
+    //not used anymore
+    /*
+    int getGroupZeroCounter();
+    void setGroupZeroCounter(int new_zero_counter);
+    AVL_Tree<PlayerSeat, PlayerSeat>& getPlayersTree();
+    void setGroupsPlayerTree(AVL_Tree<PlayerSeat,PlayerSeat>& new_tree);
+    */
     
 };
 void unite_groups(Group& group_root,Group& group_to_add);

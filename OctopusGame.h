@@ -17,23 +17,20 @@ class OctopusGame
 
     HashTable<Player> PlayersTable;
     UnionFind GroupsUF;
-    AVL_Tree<PlayerSeat, PlayerSeat> PlayerByLevelTree;
+    //This part was moved to GroupsUF[0]
+    /*
     Score_structure* all_groups_ss;
+    */
+    /*
+    AVL_Tree<PlayerSeat, PlayerSeat> PlayerByLevelTree;
     int all_players_zero_level_counter;
+    */
     int k;
     int scale;
 
     // help functions
     Player* OctopusGame::findPlayerInTable(int PlayerID);
 public:
-    int getK(){
-        return k;
-    }
-
-    int getScale(){
-        return scale;
-    }
-
     OctopusGame() = default;
 
     OctopusGame(int k, int scale);

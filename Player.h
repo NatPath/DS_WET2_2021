@@ -30,12 +30,14 @@ public:
 
     int getPlayerID() const;
     int getGroupID() const;
+
     int getLevel();
     void setLevel(int new_level);
     void increaseLevel(int increase_by);
 
     int getScore();
     void setScore(int new_score);
+    void increaseScore(int increase_by);
 
 
 
