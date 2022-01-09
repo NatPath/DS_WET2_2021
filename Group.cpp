@@ -1,11 +1,32 @@
 #include "Group.h"
+#include "OctopusGame.h"
 
-int Group::setID(int new_id){
+Group::Group() : group_id(-1),size(0),groupSS(nullptr){
+}
+Group::Group(int groupID) : group_id(groupID),size(0){
+    groupSS=new Score_structure[global_scale+1];
+    for (int i=0;i<=global_scale;i++){
+        groupSS[i].set_score(i);
+    }
+}
+void Group::initSS(int scale){
+    groupSS = new Score_structure[scale+1];
+    for (int i=0; i<=scale ; i++){
+        groupSS[i].set_score(i);
+    }
+}
+void Group::setID(int new_id){
     group_id= new_id;
 }
 int Group::getID() const
 {
     return group_id;
+}
+Score_structure* Group::get_groupSS(){
+    return groupSS;
+}
+void Group::set_groupSS(Score_structure* new_groupSS){
+    groupSS=new_groupSS;
 }
 int Group::getSize() const{
     return size;

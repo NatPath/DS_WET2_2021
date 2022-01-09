@@ -5,7 +5,6 @@
 #include "Auxiliaries.h"
 #include "library2.h"
 #include "Avl.h"
-#include "Group.h"
 #include "Player.h"
 
 class PlayerSeat
@@ -46,5 +45,4 @@ bool operator==(const PlayerSeat &player_seat_1, const PlayerSeat &player_seat_2
 bool operator!=(const PlayerSeat &player_seat_1, const PlayerSeat &player_seat_2);
 */
 
-void updatePlayerSeatAboutGroup(Node_ptr<PlayerSeat, PlayerSeat> player_seat, Group *group_p);
 #endif

@@ -1,0 +1,1 @@
+g++ -std=c++11 -DNDEBUG -Wall -g main2.cpp library2.cpp OctopusGame.cpp Group.cpp Player.cpp PlayerSeat.cpp UnionFind.cpp Scores_structure.cpp -o OctopusGame.out

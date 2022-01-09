@@ -5,7 +5,6 @@
 #include "Auxiliaries.h"
 #include "library2.h"
 #include "Avl.h"
-#include "Group.h"
 #include "PlayerSeat.h"
 #include "List.h"
 
@@ -31,13 +30,14 @@ public:
     int getPlayerID() const;
     int getGroupID() const;
 
+    int get_id() const{return playerID;}
+
     int getLevel();
     void setLevel(int new_level);
     void increaseLevel(int increase_by);
 
     int getScore();
     void setScore(int new_score);
-    void increaseScore(int increase_by);
 
 
 

@@ -3,6 +3,9 @@
 #include <exception>
 #include <iostream>
 
+//global variables
+extern int global_scale;
+extern int global_k;
 //All the class definition needed:
 class Player;
 class PlayerSeat;

@@ -1,5 +1,3 @@
-
-
 #ifndef UNIONFIND_H
 #define UNIONFIND_H
 #include "Group.h"
@@ -13,6 +11,7 @@ class UnionFind{
 
     public:
     UnionFind(int numOfEle);
+    void initilize(int scale);
     Group& find(const Group& group);
     Group& findByID(int groupID);
     void unionGroups(const Group& group1, const Group& group2);

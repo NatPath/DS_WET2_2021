@@ -7,7 +7,6 @@
 #include "Avl.h"
 #include "Player.h"
 #include "Scores_structure.h"
-#include "OctopusGame.h"
 
 class Group
 {
@@ -21,16 +20,13 @@ class Group
     */
 
 public:
-    Group(int groupID) : group_id(groupID),size(0){
-        groupSS=new Score_structure[global_scale+1];
-        for (int i=0;i<=global_scale;i++){
-            groupSS[i].set_score(i);
-        }
-    };
-    Group(): group_id(-1),size(0){}
+    Group(int groupID); 
+    Group();
     ~Group()=default;
 
-    int setID(int new_id);
+    void initSS(int scale);
+
+    void setID(int new_id);
     int getID() const;
 
     Score_structure* get_groupSS();

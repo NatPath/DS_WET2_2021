@@ -70,8 +70,13 @@ StatusType AverageHighestPlayerLevelByGroup(void *DS, int GroupID, int m, double
     
 
 
-StatusType GetPlayersBound(void *DS, int GroupID, int score, int m,
-                                         int * LowerBoundPlayers, int * HigherBoundPlayers);
+StatusType GetPlayersBound(void *DS, int GroupID, int score, int m,int * LowerBoundPlayers, int * HigherBoundPlayers){
+    if (DS==NULL){
+        return INVALID_INPUT;
+    }
+    OctopusGame *Ogame = static_cast<OctopusGame *>(DS);
+    return (Ogame)->GetPlayersBound(GroupID, score,m,LowerBoundPlayers,HigherBoundPlayers); // Needs to take care of StatusType - INVALID_INPUT, ALLOCATION_ERROR, FAILURE and SUCCESS
+}
 
 void Quit(void** DS){
     delete (OctopusGame*)(*DS);

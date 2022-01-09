@@ -19,9 +19,12 @@ class AVL_NODE{
     Node_ptr parent;
     int height;
     int rank;
+    //added in 2021
+    int rank2;
 
     public:
-    AVL_NODE(const KEY& key,const VAL& value):key(key),value(value),left(nullptr),right(nullptr),parent(nullptr),height(0),rank(1){}
+    AVL_NODE(const KEY& key,const VAL& value):key(key),value(value),left(nullptr),right(nullptr),parent(nullptr),height(0),rank(1),rank2(0){}
+    AVL_NODE(const KEY& key,const VAL& value,int rank2):key(key),value(value),left(nullptr),right(nullptr),parent(nullptr),height(0),rank(1),rank2(rank2){}
     ~AVL_NODE()=default;
    
 
@@ -47,6 +50,10 @@ class AVL_NODE{
     int getRank() const{
         return rank;
     }
+    //added in 2021
+    int getRank2() const{
+        return rank2;
+    }
     //setters
     void setValue(const VAL& new_value){
         value=new_value;
@@ -68,6 +75,10 @@ class AVL_NODE{
     }
     void setRank(int new_rank){
         rank=new_rank;
+    }
+    //added in 2021
+    void setRank2(int new_rank2){
+        rank2=new_rank2;
     }
 
     //Height functions
@@ -128,9 +139,27 @@ class AVL_NODE{
     void updateRank(){
         rank=this->calcRank();
     }
+    //Rank2 functions - added in 2021
+    int calcRank2(){
+        int left_rank2=0;
+        int right_rank2=0;
+        if (left!=nullptr){
+            left_rank2=left->rank2;
+        }
+        if (right!=nullptr){
+            right_rank2=right->rank2;
+        }
+        return right_rank2+left_rank2+1;
+    }
+    void updateRank2(){
+        rank2=this->calcRank2();
+    }
+
     void updateAttributes(){
         this->updateHeight();
         this->updateRank();
+        //added in 2021
+        this->updateRank2();
     }
     // print functions- expects printable type
     void printValue() const{
@@ -319,6 +348,7 @@ class AVL_Tree{
     * otherwise, returns the last vertex on the search path.(note: it must be a leaf or with only one child)
     */
     Node_ptr findLastOfSearchPath(const KEY& to_find) const{
+
         Node_ptr i=root;
         if(i==nullptr){
             return nullptr;
@@ -356,12 +386,12 @@ class AVL_Tree{
     * 3)  update heights in the search path and do a roll if needed 
     * O(log(n))
     */
-    bool insertNode(const KEY& key_insert,const VAL& val_insert){
+    bool insertNode(const KEY& key_insert,const VAL& val_insert,int rank2_insert=0){
         // search for the key in the tree O(log(n))
         Node_ptr found_spot=findLastOfSearchPath(key_insert);
         if (found_spot==nullptr){
             //first node in the tree
-            root=std::make_shared<AVL_NODE<KEY,VAL>>(key_insert,val_insert);
+            root=std::make_shared<AVL_NODE<KEY,VAL>>(key_insert,val_insert,rank2_insert);
             return true;
         }
         if (found_spot->getKey()==key_insert){
@@ -371,7 +401,7 @@ class AVL_Tree{
         //
         
         //creates the new node and connects it
-        Node_ptr i=std::make_shared<AVL_NODE<KEY,VAL>>(key_insert,val_insert);
+        Node_ptr i=std::make_shared<AVL_NODE<KEY,VAL>>(key_insert,val_insert,rank2_insert);
         if(found_spot->getKey() < key_insert){
             connectNodes(found_spot,i,R);               
         }
@@ -385,6 +415,7 @@ class AVL_Tree{
         //O(log(n) - iteration over the search path
         while (itt!=nullptr){
             itt->updateRank();
+            itt->updateRank2();
             itt=itt->getParent();
         }
         itt.reset();
@@ -495,6 +526,9 @@ class AVL_Tree{
         while (j!=nullptr){
             j->updateHeight();
             j->updateRank();
+            //added in 2021
+            j->updateRank2();
+            //
             j=j->getParent();
         }
         j.reset();
@@ -567,6 +601,110 @@ class AVL_Tree{
         }
         return itt;
     }
+    //added in 2021
+    /**
+     * select and sum rank2 on the search path.
+     *  
+     * */
+    Node_ptr select_and_sum(int k,int* sum){
+        int tree_size=root->getRank();
+        if (k>tree_size){
+            //there is no kth element because there are less than k elements
+            return nullptr;
+        }
+        Node_ptr left=root->getLeft();
+        int left_rank=0;
+        int left_rank2=0;
+        if (left!=nullptr){
+            left_rank=left->getRank();
+            left_rank2=left->getRank2();
+        }
+        Node_ptr right=root->getRight();
+        int right_rank2=0;
+        if (right!=nullptr){
+            right_rank2=right->getRank2();
+        }
+        int curr_level=root->getRank2()-right_rank2-left_rank2;
+        *sum=0;
+        Node_ptr itt=root;
+        while(left_rank+1!=k){
+            if (left_rank>=k){
+                itt=itt->getLeft();
+            }
+            else{
+                k=k-(left_rank+1);
+                *sum=*sum+left_rank2+curr_level;
+                itt=itt->getRight();
+            }
+            if (itt==nullptr){
+                throw std::runtime_error("this shouldn't happen, ever");
+            }
+
+            curr_level=itt->getRank2()-right_rank2-left_rank2;
+
+            left=itt->getLeft();
+            left_rank=0;
+            left_rank2=0;
+            if (left!=nullptr){
+                left_rank=left->getRank();
+                left_rank2=left->getRank2();
+            }
+
+            right=itt->getRight();
+            right_rank2=0;
+            if (right!=nullptr){
+                right_rank2=right->getRank2();
+            }
+        }
+        *sum=*sum+left_rank2+curr_level;
+        return itt;
+    }
+    //findMax
+    Node_ptr findIndex_wrap(KEY& to_find,int* index){
+        Node_ptr i=root;
+        int left_rank=0;
+        Node_ptr left;
+        *index=0;
+        if(i==nullptr){
+            return nullptr;
+        }
+        do{
+            if (i->getKey()==to_find){
+                *index=*index+1;
+                return i;
+            }
+            if (i->getKey()>to_find){
+                
+                if (i->getLeft()!=nullptr){
+                    i=i->getLeft();
+                }
+                else {
+                    return i;
+                }
+            }
+            else{
+                if (i->getRight()!=nullptr){
+                    left_rank=0;
+                    left=i->getLeft();
+                    if (left!=nullptr){
+                        left_rank= left->getRank();
+                    }
+                    *index=*index+1+left_rank;
+                    i=i->getRight();
+                }
+                else {
+                    return i;
+                }
+            }
+
+        } while (true);
+    }
+    int findIndex(KEY& key){
+        int res=0;
+        findIndex_wrap(key,&res);
+        return res;
+    }
+
 
     int getHeight() const{
         if (root!=nullptr){
@@ -806,8 +944,14 @@ void roll_ll(Node_ptr<KEY,VAL>& old_root){
 
     old_root->updateHeight();
     old_root->updateRank();
+    //added in 2021
+    old_root->updateRank2();
+    //
     new_root->updateHeight();
     new_root->updateRank();
+    //added in 2021
+    new_root->updateRank2();
+    //
 
     old_root=new_root;
 
@@ -833,8 +977,14 @@ void roll_rr(Node_ptr<KEY,VAL>& old_root){
     //handles new heights
     old_root->updateHeight();
     old_root->updateRank();
+    //added in 2021
+    old_root->updateRank2();
+    //
     new_root->updateHeight();
     new_root->updateRank();
+    //added in 2021
+    new_root->updateRank2();
+    //
 
     old_root=new_root;
 }
@@ -866,10 +1016,19 @@ void roll_lr(Node_ptr<KEY,VAL>& old_root){
     //corrects heights and ranks
     old_root->updateHeight();
     old_root->updateRank();
+    //added in 2021
+    old_root->updateRank2();
+    //
     left->updateHeight();
     left->updateRank();
+    //added in 2021
+    left->updateRank2();
+    //
     new_root->updateHeight();
     new_root->updateRank();
+    //added in 2021
+    new_root->updateRank2();
+    //
     
     old_root=new_root;
 }
@@ -899,10 +1058,19 @@ void roll_rl(Node_ptr<KEY,VAL>& old_root){
     //handles new heights and ranks
     old_root->updateHeight();
     old_root->updateRank();
+    //added in 2021
+    old_root->updateRank2();
+    //
     right->updateHeight();
     right->updateRank();
+    //added in 2021
+    right->updateRank2();
+    //
     new_root->updateHeight();
     new_root->updateRank();
+    //added in 2021
+    new_root->updateRank2();
+    //
 
     old_root=new_root;
 }

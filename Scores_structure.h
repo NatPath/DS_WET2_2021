@@ -10,7 +10,8 @@ class Score_structure{
     int zero_counter;
     int score;
     public:
-    Score_structure():zero_counter(0),score(0){};
+    //Score_structure():zero_counter(0),score(0){};
+    Score_structure();
     Score_structure(int score):zero_counter(0),score(score){};
     ~Score_structure()=default;
 

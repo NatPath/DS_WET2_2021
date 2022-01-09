@@ -1,6 +1,9 @@
 #include "OctopusGame.h"
 
-OctopusGame::OctopusGame(int k , int scale):PlayersTable(2),GroupsUF(k),k(k),scale(scale){
+int global_scale;
+int global_k;
+OctopusGame::OctopusGame(int k , int scale):k(k),scale(scale),PlayersTable(2),GroupsUF(k){
+    GroupsUF.initilize(scale);
     global_scale=scale;
     global_k=k;
 }
@@ -76,8 +79,6 @@ StatusType OctopusGame::RemovePlayer(int PlayerID){
     Player* currentPlayer = found_node->getValue().get();
     
     Group& playerGroup = GroupsUF.findByID(currentPlayer->getGroupID());
-    Score_structure* groupSS = playerGroup.get_groupSS();
-    int currentPlayerScore = currentPlayer->getScore();
     playerGroup.removePlayer(currentPlayer);
     /*
 
@@ -194,26 +195,32 @@ StatusType OctopusGame::ChangePlayerIDScore(int PlayerID, int NewScore){
     if(PlayerID <= 0 || NewScore > scale || NewScore <= 0){
         return INVALID_INPUT;
     }
-    Player dummyPlayer(PlayerID,0,0);
-    ListNode<Player>* found_node = PlayersTable.find(dummyPlayer);
-    
-    if(found_node == nullptr){
-        return FAILURE;
+    try{
+        Player dummyPlayer(PlayerID,0,0);
+        ListNode<Player>* found_node = PlayersTable.find(dummyPlayer);
+        
+        if(found_node == nullptr){
+            return FAILURE;
+        }
+        Player* currentPlayer = found_node->getValue().get();
+
+        Group& playerGroup = GroupsUF.findByID(currentPlayer->getGroupID());
+        Group& allplayersGroup = GroupsUF.findByID(0);
+        
+        playerGroup.removePlayer(currentPlayer);
+        allplayersGroup.removePlayer(currentPlayer);
+
+        currentPlayer->setScore(NewScore);
+
+        playerGroup.insertPlayer(currentPlayer);
+        allplayersGroup.insertPlayer(currentPlayer);
+
+        return StatusType::SUCCESS;
     }
-    Player* currentPlayer = found_node->getValue().get();
-    int old_score = currentPlayer->getScore();
-
-    Group& playerGroup = GroupsUF.findByID(currentPlayer->getGroupID());
-    Group& allplayersGroup = GroupsUF.findByID(0);
-    int currentPlayerScore = currentPlayer->getScore();
-    
-    playerGroup.removePlayer(currentPlayer);
-    allplayersGroup.removePlayer(currentPlayer);
-
-    currentPlayer->setScore(NewScore);
-
-    playerGroup.insertPlayer(currentPlayer);
-    allplayersGroup.insertPlayer(currentPlayer);
+    catch(const std::bad_alloc &e)
+    {
+        return StatusType::ALLOCATION_ERROR;
+    }
     
     /*
     currentPlayer->setScore(NewScore);
@@ -258,16 +265,55 @@ StatusType OctopusGame::ChangePlayerIDScore(int PlayerID, int NewScore){
         return StatusType::ALLOCATION_ERROR;
     }
     */
-
     return SUCCESS;
-
-
 }
 
 StatusType OctopusGame::GetPercentOfPlayersWithScoreInBounds(int GroupID, int score, int lowerLevel, int higherLevel, double * players){
     if(players == NULL || GroupID < 0 || GroupID > k){
         return INVALID_INPUT;
     }
+
+    try{
+        
+        Group& playersGroup = GroupsUF.findByID(GroupID);
+        Player maxDummyPlayer(-1, GroupID, score);
+        Player minDummyPlayer(0,GroupID, score);
+        maxDummyPlayer.setLevel(higherLevel);
+        minDummyPlayer.setLevel(lowerLevel);
+        Player* maxPlayer = &maxDummyPlayer;
+        Player* minPlayer = &minDummyPlayer;
+        
+        playersGroup.insertPlayer(maxPlayer);
+        playersGroup.insertPlayer(minPlayer);
+
+        Score_structure* groupSS = playersGroup.get_groupSS();
+        AVL_Tree<PlayerSeat,PlayerSeat>& scorePlayersTree = groupSS[score].get_ScoreTree();
+        PlayerSeat maxPlayerSeat(maxPlayer);
+        PlayerSeat minPlayerSeat(minPlayer);
+        double max_index = scorePlayersTree.findIndex(maxPlayerSeat);
+        double min_index = scorePlayersTree.findIndex(minPlayerSeat);
+        Node_ptr<PlayerSeat, PlayerSeat> root = scorePlayersTree.getRoot();
+        double total_players = root->getRank();
+
+        double difference = max_index - min_index - 2;
+        if(lowerLevel <= 0){
+            double zero_counter = groupSS->get_ZeroCounter();
+            difference += zero_counter;
+        }
+        
+        if(difference <= 0){
+            return FAILURE;
+        }
+        *players = (difference*100)/total_players;
+        playersGroup.removePlayer(maxPlayer);
+        playersGroup.removePlayer(minPlayer);
+        
+    }catch(const std::bad_alloc &e)
+    {
+        return StatusType::ALLOCATION_ERROR;
+    }
+    return SUCCESS;
+        
 }
 
     
@@ -276,7 +322,49 @@ StatusType OctopusGame::AverageHighestPlayerLevelByGroup(int GroupID, int m, dou
     if(level == NULL || m <= 0 || GroupID < 0 || GroupID > k){
         return INVALID_INPUT;
     }
+    try{
+        Group& found_group = GroupsUF.findByID(GroupID);
+        int group_size = found_group.getSize();
+        if (found_group.getSize()<m){
+            return StatusType::FAILURE;
+        }
 
+        
+        Score_structure* groupSS = found_group.get_groupSS();
+        int zero_count=groupSS[0].get_ZeroCounter();
+        int n_prime=group_size-zero_count;
+        if (n_prime==0){
+            *level=0;
+            return StatusType::SUCCESS;
+        }
+        int index_to_select= n_prime-m+1;
+        if (n_prime<m){
+            index_to_select=1;
+        }
+
+        AVL_Tree<PlayerSeat,PlayerSeat>& all_players_in_group_tree = groupSS[0].get_ScoreTree();
+        int sum_of_smaller_levels=0;
+        all_players_in_group_tree.select_and_sum(index_to_select,&sum_of_smaller_levels);
+        int sum=0;
+        all_players_in_group_tree.select_and_sum(n_prime,&sum);
+        Node_ptr<PlayerSeat,PlayerSeat> n_minus_m_player= all_players_in_group_tree.select(index_to_select);
+        int n_minus_m_player_level=n_minus_m_player->getValue().getPlayerOnSeat()->getLevel();
+        int res_sum = sum- sum_of_smaller_levels+n_minus_m_player_level;//the sum of levels of m highest level players
+        double res = (double)res_sum/(double)m;
+        *level=res;
+
+        return StatusType::SUCCESS;
+    }
+    catch(const std::bad_alloc &e)
+    {
+        return StatusType::ALLOCATION_ERROR;
+    }
+
+}
+
+//bonus
+StatusType OctopusGame::GetPlayersBound(int GroupID, int score, int m, int *LoverBoundPlayers, int *HigherBoundPlayers){
+    return StatusType::SUCCESS;
 }
     
 

@@ -2,9 +2,10 @@
 #include "AVL_extra_functions.h"
 
 //
+Score_structure::Score_structure() : score_tree(),zero_counter(0),score(0){
+}
 void Score_structure::removePlayer_from_ss(PlayerSeat player_to_remove){
     Player* player_pointer= player_to_remove.getPlayerOnSeat();
-    int player_score = player_pointer->getScore();
     int player_level= player_pointer->getLevel();
     if (player_level==0){
         zero_counter--;
@@ -15,20 +16,29 @@ void Score_structure::removePlayer_from_ss(PlayerSeat player_to_remove){
 }
 void Score_structure::addPlayer_to_ss(PlayerSeat player_to_add){
     Player* player_pointer= player_to_add.getPlayerOnSeat();
-    int player_score = player_pointer->getScore();
+    int playerID= player_pointer->getPlayerID();
     int player_level= player_pointer->getLevel();
-    if (player_level==0){
+    if (player_level==0 && playerID!=-1 && playerID!=0){
         zero_counter++;
     }
     else{
         score_tree.insertNode(player_to_add,player_to_add);
     }
 }
+void Score_structure::set_score(int new_score){
+    score=new_score;
+}
+int Score_structure::get_score(){
+    return score;
+}
 int Score_structure::get_ZeroCounter(){
     return zero_counter;
 }
 AVL_Tree<PlayerSeat,PlayerSeat>& Score_structure::get_ScoreTree(){
     return score_tree;
+}
+void Score_structure::set_ZeroCounter(int new_zero_counter){
+    zero_counter=new_zero_counter;
 }
 void Score_structure::set_ScoreTree(AVL_Tree<PlayerSeat,PlayerSeat>& new_score_tree ){
     score_tree = new_score_tree;

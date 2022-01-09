@@ -9,12 +9,13 @@
 #include "Player.h"
 #include "HashTable.h"
 #include "UnionFind.h"
+#include "Scores_structure.h"
 
-int global_scale=0;
-int global_k=0;
 class OctopusGame
 {
 
+    int k;
+    int scale;
     HashTable<Player> PlayersTable;
     UnionFind GroupsUF;
     //This part was moved to GroupsUF[0]
@@ -25,13 +26,9 @@ class OctopusGame
     AVL_Tree<PlayerSeat, PlayerSeat> PlayerByLevelTree;
     int all_players_zero_level_counter;
     */
-    int k;
-    int scale;
 
     // help functions
-    Player* OctopusGame::findPlayerInTable(int PlayerID);
 public:
-    OctopusGame() = default;
 
     OctopusGame(int k, int scale);
 

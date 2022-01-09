@@ -1,11 +1,21 @@
 #include "UnionFind.h"
 
-UnionFind::UnionFind(int numOfEle) : size(new int[numOfEle+1]), parent(new int[numOfEle+1]), groups(new Group[numOfEle+1]), k(numOfEle){
-    for (int i=0;i<=k;i++){
+//UnionFind::UnionFind(int numOfEle) : size(new int[numOfEle+1]), parent(new int[numOfEle+1]), groups(new Group[numOfEle+1]), k(numOfEle){
+UnionFind::UnionFind(int numOfEle){
+    k=numOfEle;
+    size=new int[numOfEle+1];
+    parent=new int[numOfEle+1];
+    groups=new Group[numOfEle+1];
+    for (int i=0;i<=numOfEle;i++){
         groups[i].setID(i);
         size[i]=0;
         parent[i]=NO_PARENT;
     }
+}
+void UnionFind::initilize(int scale){
+    for (int i=0;i<=k;i++){
+        groups[i].initSS(scale);
+    }    
 }
 void UnionFind::unionGroupsByID(int group1, int group2){
     UnionFind::unionGroups(groups[group1], groups[group2]);
