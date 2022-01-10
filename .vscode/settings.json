@@ -4,6 +4,9 @@
         "string": "cpp",
         "unordered_map": "cpp",
         "string_view": "cpp",
-        "streambuf": "cpp"
+        "streambuf": "cpp",
+        "cstdio": "cpp",
+        "deque": "cpp",
+        "vector": "cpp"
     }
 }

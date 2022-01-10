@@ -50,7 +50,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/OctopusGame.out",
-            "args": ["<${workspaceFolder}/Tests/Tests_without_playerbounds/input_0.txt"],
+            "args": ["<${workspaceFolder}/Tests/Tests_without_playerbounds/input_1.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

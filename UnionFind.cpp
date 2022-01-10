@@ -12,6 +12,11 @@ UnionFind::UnionFind(int numOfEle){
         parent[i]=NO_PARENT;
     }
 }
+UnionFind::~UnionFind(){
+    delete[] size;
+    delete[] parent;
+    delete[] groups;
+}
 void UnionFind::initilize(int scale){
     for (int i=0;i<=k;i++){
         groups[i].initSS(scale);
@@ -23,7 +28,9 @@ void UnionFind::unionGroupsByID(int group1, int group2){
 void UnionFind::unionGroups(const Group &group1, const Group &group2) {
     Group& group1_root = find(group1);
     Group& group2_root = find(group2);
-
+    if (group1_root.getID()==group2_root.getID()){
+        return;
+    }
 
     if(size[group1_root.getID()] < size[group2_root.getID()]){
         parent[group1_root.getID()] = group2_root.getID();

@@ -11,6 +11,7 @@ class UnionFind{
 
     public:
     UnionFind(int numOfEle);
+    ~UnionFind();
     void initilize(int scale);
     Group& find(const Group& group);
     Group& findByID(int groupID);

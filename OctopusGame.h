@@ -28,6 +28,7 @@ class OctopusGame
     */
 
     // help functions
+    double calculate_number_of_players_in_bound(int GroupID, int lowerLevel,int higherLevel,int score);
 public:
 
     OctopusGame(int k, int scale);

@@ -1,7 +1,7 @@
 #include "Group.h"
 #include "OctopusGame.h"
 
-Group::Group() : group_id(-1),size(0),groupSS(nullptr){
+Group::Group() : group_id(-1),size(0),groupSS(nullptr),scale(-1){
 }
 Group::Group(int groupID) : group_id(groupID),size(0){
     groupSS=new Score_structure[global_scale+1];
@@ -9,7 +9,11 @@ Group::Group(int groupID) : group_id(groupID),size(0){
         groupSS[i].set_score(i);
     }
 }
-void Group::initSS(int scale){
+Group::~Group(){
+    delete[] groupSS;
+}
+void Group::initSS(int new_scale){
+    scale=new_scale;
     groupSS = new Score_structure[scale+1];
     for (int i=0; i<=scale ; i++){
         groupSS[i].set_score(i);
@@ -50,11 +54,14 @@ void Group::removePlayer(Player* player_p){
 }
 
 void unite_groups(Group& group_root,Group& group_to_add){
+    int group_root_size=group_root.getSize();
+    int group_to_add_size=group_to_add.getSize();
     Score_structure* root_ss = group_root.get_groupSS();
     Score_structure* to_add_ss = group_to_add.get_groupSS();
-    for (int i=0;i<=global_scale;i++){
+    for (int i=0;i<=group_root.scale;i++){
         unite_score_structures(root_ss[i],to_add_ss[i]);
     }
+    group_root.setSize(group_root_size+group_to_add_size);
     /*
     AVL_Tree<PlayerSeat,PlayerSeat> root_tree = group_root.getPlayersTree();
     AVL_Tree<PlayerSeat,PlayerSeat> to_add_tree= group_to_add.getPlayersTree();

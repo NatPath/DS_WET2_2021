@@ -6,8 +6,9 @@ Score_structure::Score_structure() : score_tree(),zero_counter(0),score(0){
 }
 void Score_structure::removePlayer_from_ss(PlayerSeat player_to_remove){
     Player* player_pointer= player_to_remove.getPlayerOnSeat();
+    int playerID= player_pointer->getPlayerID();
     int player_level= player_pointer->getLevel();
-    if (player_level==0){
+    if (player_level==0 && playerID!=-1 && playerID!=0){
         zero_counter--;
     }
     else{
@@ -22,7 +23,7 @@ void Score_structure::addPlayer_to_ss(PlayerSeat player_to_add){
         zero_counter++;
     }
     else{
-        score_tree.insertNode(player_to_add,player_to_add);
+        score_tree.insertNode(player_to_add,player_to_add,player_level);
     }
 }
 void Score_structure::set_score(int new_score){
@@ -52,4 +53,5 @@ void unite_score_structures(Score_structure&  ss_root,Score_structure& ss_to_add
     AVL_Tree<PlayerSeat,PlayerSeat> res_tree = merge_trees(root_tree,to_add_tree);
     ss_root.set_ScoreTree(res_tree);
     ss_root.set_ZeroCounter(zero_counter1+zero_counter2);
+    res_tree.setRoot(nullptr);
 }

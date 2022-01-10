@@ -119,6 +119,9 @@ class HashTable{
        _data_chains=new List<T>[_size];
    }
    ListNode<T>* find(T& to_find){
+       if (_size==0){
+           return nullptr;
+       }
       int table_index=hash_function(to_find);
        return _data_chains[table_index].find(to_find);
    }
@@ -152,7 +155,7 @@ class HashTable{
    void remove(T& to_remove){
        _data_chains[hash_function(to_remove)].remove(to_remove);
        _counter--;
-       if (getOverLoadFactor()<0.5){
+       if (getOverLoadFactor()<0.5 && _size>=2){
            contract();
        }
    }

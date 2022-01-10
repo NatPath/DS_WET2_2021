@@ -21,6 +21,7 @@ public:
      * 2)
      * 3)
      * */
+    int getLevel();
 
     friend bool operator<(PlayerSeat const&player_seat_1, PlayerSeat const&player_seat_2);
     friend bool operator<=(PlayerSeat const&player_seat_1, PlayerSeat const&player_seat_2);

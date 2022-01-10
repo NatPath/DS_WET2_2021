@@ -149,7 +149,7 @@ class AVL_NODE{
         if (right!=nullptr){
             right_rank2=right->rank2;
         }
-        return right_rank2+left_rank2+1;
+        return right_rank2+left_rank2+key.getLevel();
     }
     void updateRank2(){
         rank2=this->calcRank2();
@@ -640,7 +640,6 @@ class AVL_Tree{
                 throw std::runtime_error("this shouldn't happen, ever");
             }
 
-            curr_level=itt->getRank2()-right_rank2-left_rank2;
 
             left=itt->getLeft();
             left_rank=0;
@@ -655,6 +654,7 @@ class AVL_Tree{
             if (right!=nullptr){
                 right_rank2=right->getRank2();
             }
+            curr_level=itt->getRank2()-right_rank2-left_rank2;
         }
         *sum=*sum+left_rank2+curr_level;
         return itt;
@@ -669,8 +669,13 @@ class AVL_Tree{
             return nullptr;
         }
         do{
+            left_rank=0;
+            left=i->getLeft();
+            if (left!=nullptr){
+                left_rank= left->getRank();
+            }
             if (i->getKey()==to_find){
-                *index=*index+1;
+                *index=*index+1+left_rank;
                 return i;
             }
             if (i->getKey()>to_find){
@@ -684,11 +689,6 @@ class AVL_Tree{
             }
             else{
                 if (i->getRight()!=nullptr){
-                    left_rank=0;
-                    left=i->getLeft();
-                    if (left!=nullptr){
-                        left_rank= left->getRank();
-                    }
                     *index=*index+1+left_rank;
                     i=i->getRight();
                 }

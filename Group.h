@@ -13,6 +13,7 @@ class Group
     int group_id;
     int size;
     Score_structure* groupSS;
+    int scale;
     //This part was moved to groupSS[0]
     /* 
     AVL_Tree<PlayerSeat,PlayerSeat> groupPlayersByLevelTree;
@@ -22,7 +23,7 @@ class Group
 public:
     Group(int groupID); 
     Group();
-    ~Group()=default;
+    ~Group();
 
     void initSS(int scale);
 
@@ -55,8 +56,8 @@ public:
     AVL_Tree<PlayerSeat, PlayerSeat>& getPlayersTree();
     void setGroupsPlayerTree(AVL_Tree<PlayerSeat,PlayerSeat>& new_tree);
     */
+    friend void unite_groups(Group& group_root,Group& group_to_add);
     
 };
-void unite_groups(Group& group_root,Group& group_to_add);
 
 #endif
