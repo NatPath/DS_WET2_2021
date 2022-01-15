@@ -1,0 +1,2 @@
+for i in {0..99}; do ./OctopusGame.out < Tests/Very_big/without_playerbounds/input_$i.txt > Tests/Very_big/without_playerbounds/our_out_$i.txt; done
+for i in {0..99}; do diff -s -q Tests/Very_big/without_playerbounds/out_$i.txt Tests/Very_big/without_playerbounds/our_out_$i.txt; done
