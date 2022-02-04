@@ -1,0 +1,5 @@
+in the file OctopusGame.cpp changed line 192 
+from:
+if (lowerLevel==0){
+to:
+if (lowerLevel<=0 && higherLevel >=0){

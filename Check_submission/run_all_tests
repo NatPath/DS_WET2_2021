@@ -1,0 +1,2 @@
+for i in {0..99}; do valgrind --leak-check=full ./OctopusGame.out < Tests/Tests_without_playerbounds/input_$i.txt > Tests/Tests_without_playerbounds/our_out_$i.txt; done
+for i in {0..99}; do diff -s -q Tests/Tests_without_playerbounds/out_$i.txt Tests/Tests_without_playerbounds/our_out_$i.txt; done

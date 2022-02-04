@@ -189,7 +189,7 @@ double OctopusGame::calculate_number_of_players_in_bound(int GroupID, int lowerL
 
     total = max_index - min_index - 1;
 
-    if (lowerLevel<=0 && higherLevel >=0){
+    if (lowerLevel==0){
         total+= groupSS.get_ZeroCounter();
     }
     playersGroup.removePlayer(maxPlayer);
